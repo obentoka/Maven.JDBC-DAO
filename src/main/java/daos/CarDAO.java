@@ -13,7 +13,7 @@ public class CarDAO implements DAO<CarDTO> {
     private Statement statement;
     private PreparedStatement preStatement;
     private ResultSet rs;
-    private static final Logger LOGGER =
+    private static final Logger log =
             Logger.getLogger(CarDAO.class.getName());
     private final String FIND_ALL = "SELECT * FROM CAR";
 
@@ -24,9 +24,9 @@ public class CarDAO implements DAO<CarDTO> {
                     .getConnection("jdbc:postgresql://localhost:5432/vle");
             connection.setAutoCommit(false);
         }catch (Exception e){
-            LOGGER.info("Error: " + e);
+            log.info("Error: " + e);
         }
-        LOGGER.info("Connected");
+        log.info("Connected");
     }
 
     public CarDTO makeCarOnWayOut(ResultSet rs) throws SQLException {
@@ -39,16 +39,19 @@ public class CarDAO implements DAO<CarDTO> {
     }
 
     public CarDTO findById(int id) {
+        connect();
         String sql = "SELECT * FROM CAR WHERE ID=" + id + ";";
          statement = null;
          rs = null;
         try {
             statement = connection.createStatement();
             rs = statement.executeQuery(sql);
-            if(rs.next())
+            if(rs.next()) {
+                log.info("Found!");
                 return makeCarOnWayOut(rs);
+            }
         }catch (SQLException e){
-            LOGGER.info("Error: " + e);
+            log.info("Error: " + e);
         }finally {
             try { if (rs != null) rs.close(); } catch (Exception e) {};
             try { if (statement != null) statement.close(); } catch (Exception e) {};
@@ -58,6 +61,7 @@ public class CarDAO implements DAO<CarDTO> {
     }
 
     public List<CarDTO> findAll() {
+        connect();
         List<CarDTO> retList = new LinkedList<>();
         statement = null;
         rs = null;
@@ -67,9 +71,10 @@ public class CarDAO implements DAO<CarDTO> {
             while (rs.next()){
                 retList.add(makeCarOnWayOut(rs));
             }
+            log.info("Found all!");
             return retList;
         }catch (SQLException e){
-            LOGGER.info("Error: " + e);
+            log.info("Error: " + e);
         }finally {
             try { if (rs != null) rs.close(); } catch (Exception e) {};
             try { if (statement != null) statement.close(); } catch (Exception e) {};
@@ -79,6 +84,7 @@ public class CarDAO implements DAO<CarDTO> {
     }
 
     public Boolean update(CarDTO dto) {
+        connect();
         preStatement = null;
         try {
             preStatement = connection.prepareStatement(
@@ -91,9 +97,10 @@ public class CarDAO implements DAO<CarDTO> {
             preStatement.setString(5, dto.getVin());
             preStatement.executeUpdate();
             connection.commit();
+            log.info("Updated!");
             return true;
         }catch (SQLException e){
-            LOGGER.info("Error: " + e);
+            log.info("Error: " + e);
         }finally {
             try { if (preStatement != null) preStatement.close(); } catch (Exception e) {};
             try { if (connection != null) connection.close(); } catch (Exception e) {};
@@ -102,6 +109,7 @@ public class CarDAO implements DAO<CarDTO> {
     }
 
     public Boolean create(CarDTO dto) {
+        connect();
         preStatement = null;
         try {
             preStatement = connection.prepareStatement(
@@ -115,9 +123,10 @@ public class CarDAO implements DAO<CarDTO> {
             preStatement.setString(6, dto.getVin());
             preStatement.executeUpdate();
             connection.commit();
+            log.info("Created!");
             return true;
         }catch (SQLException e){
-            LOGGER.info("Error: " + e);
+            log.info("Error: " + e);
         }finally {
             try { if (preStatement != null) preStatement.close(); } catch (Exception e) {};
             try { if (connection != null) connection.close(); } catch (Exception e) {};
@@ -126,6 +135,7 @@ public class CarDAO implements DAO<CarDTO> {
     }
 
     public Boolean delete(int id) {
+        connect();
         preStatement = null;
         try {
             if(!findById(id).equals(null)) {
@@ -134,10 +144,11 @@ public class CarDAO implements DAO<CarDTO> {
                 preStatement.setInt(1, id);
                 preStatement.execute();
                 connection.commit();
+                log.info("Deleted");
                 return true;
             }
         }catch (SQLException e){
-            LOGGER.info("Error: " + e);
+            log.info("Error: " + e);
         }finally {
             try { if (preStatement != null) preStatement.close(); } catch (Exception e) {};
             try { if (connection != null) connection.close(); } catch (Exception e) {};

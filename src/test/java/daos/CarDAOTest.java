@@ -25,7 +25,6 @@ public class CarDAOTest {
         expectedColor = "Aquamarine";
         expectedVin = "2HNYD286X8H432821";
         expectedCar = new CarDTO(3, expectedMake, expectedModel, expectedYear, expectedColor, expectedVin);
-        test.connect();
     }
 
     @Test
@@ -54,7 +53,6 @@ public class CarDAOTest {
         CarDTO newCar = new CarDTO(1, "bent", "gt", "2000", "white", "0000");
         test.update(newCar);
 
-        test.connect();
         CarDTO actualCar = test.findById(1);
 
         assertEquals(newCar.getMake(), actualCar.getMake());
@@ -69,7 +67,6 @@ public class CarDAOTest {
         CarDTO newCar = new CarDTO(11, "bar", "agt", "20033", "whote", "00100");
         test.create(newCar);
 
-        test.connect();
         CarDTO actualCar = test.findById(11);
 
         assertEquals(newCar.getMake(), actualCar.getMake());
@@ -82,7 +79,6 @@ public class CarDAOTest {
     @Test
     public void deleteTest(){
         test.delete(11);
-        test.connect();
         assertNull(test.findById(11));
     }
 }
