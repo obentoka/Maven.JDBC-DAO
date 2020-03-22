@@ -24,11 +24,11 @@ public class CarDTO implements DTO {
         this.model = model;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
@@ -51,11 +51,11 @@ public class CarDTO implements DTO {
     private int id;
     private String make;
     private String model;
-    private int year;
+    private String year;
     private String color;
     private String vin;
 
-    public CarDTO(int id, String make, String model, int year, String color, String vin){
+    public CarDTO(int id, String make, String model, String year, String color, String vin){
         this.id = id;
         this.make = make;
         this.model = model;
